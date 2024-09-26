@@ -6,6 +6,8 @@ import styles from './page.module.css';
 
 import readyl4smap from './actions/readytest';
 
+import { encode, decode } from '@googlemaps/polyline-codec';
+
 export default function MapImage() {
     const [imageSourceURL, setImageSourceURL] = useState('');
     const [textareaValue, setTextareaValue] = useState('');
