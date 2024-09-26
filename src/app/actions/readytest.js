@@ -50,7 +50,7 @@ export default async function readyl4smap() {
         }
     });
 
-    if (geoPath.length <= 1) {
+    if (Object.keys(geoPath).length <= 1) {
         geoPath['0, 0'] = {};
     }
 
