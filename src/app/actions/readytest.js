@@ -55,7 +55,8 @@ export default async function readyl4smap() {
             .split(', ')
             .map((coord) => {
                 return parseFloat(coord) + 0.001;
-            });
+            })
+            .join(', ');
         geoPath[loc] = {};
     }
 
