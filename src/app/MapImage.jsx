@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { encode, decode } from '@googlemaps/polyline-codec';
 
 import styles from './page.module.css';
 
@@ -73,26 +72,48 @@ export default function MapImage() {
             });
     }
 
+    function r4updateMap(event) {
+        readyl4smap()
+            .then((res) => {
+                fetch(`/api?polyline=${res}`, {
+                    header: {
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                })
+                    .then((res) => {
+                        return res.blob();
+                    })
+                    .then(async (res) => {
+                        setImageSourceURL(URL.createObjectURL(res));
+                    });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+
     return (
         <>
             <div className={styles.main}>
                 <img alt="map" src={imageSourceURL}></img>
-                <form className={styles.form}>
-                    <textarea
-                        name="toods"
-                        onChange={updateArea}
-                        value={textareaValue}
-                        className={styles.area}
-                    ></textarea>
-                    <button
-                        type="submit"
-                        className={styles.submit}
-                        onClick={updateMap}
-                    >
-                        Submit
-                    </button>
-                </form>
-                <button onClick={readyl4smap}>Am I Ready?</button>
+                <div>
+                    <form className={styles.form}>
+                        <textarea
+                            name="toods"
+                            onChange={updateArea}
+                            value={textareaValue}
+                            className={styles.area}
+                        ></textarea>
+                        <button
+                            type="submit"
+                            className={styles.submit}
+                            onClick={updateMap}
+                        >
+                            Submit
+                        </button>
+                    </form>
+                    <button onClick={() => r4updateMap()}>Am I Ready?</button>
+                </div>
             </div>
         </>
     );

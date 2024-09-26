@@ -1,5 +1,7 @@
 'use server';
 
+import { encode, decode } from '@googlemaps/polyline-codec';
+
 export default async function readyl4smap() {
     const res = await fetch('https://ready4l4s.cerfca.st/diagnose/').then(
         (res) => {
@@ -52,13 +54,15 @@ export default async function readyl4smap() {
         Object.keys(geoPath).map((item) => item.split(', '))
     );
 
-    console.log(
-        filteredPath,
-        geoPath,
-        Object.keys(geoPath).map((item) => item.split(', ')),
-        encodedPath,
-        geo
-    );
+    // console.log(
+    //     filteredPath,
+    //     geoPath,
+    //     Object.keys(geoPath).map((item) => item.split(', ')),
+    //     encodedPath,
+    //     geo
+    // );
+
+    return encodedPath;
 
     // fetch(`https://osmlatlongway.vercel.app/api?polyline=${encodedPath}`)
     //     .then((res) => {
