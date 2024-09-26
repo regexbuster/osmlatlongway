@@ -9,6 +9,7 @@ import readyl4smap from './actions/readytest';
 export default function MapImage() {
     const [imageSourceURL, setImageSourceURL] = useState('');
     const [textareaValue, setTextareaValue] = useState('');
+    const [loading, setLoading] = useState(false);
 
     function updateArea(event) {
         setTextareaValue(event.target.value);
@@ -52,6 +53,8 @@ export default function MapImage() {
     function updateMap(event) {
         event.preventDefault();
 
+        setLoading(true);
+
         const { res, err } = updatePolyline(textareaValue);
 
         if (err != null) {
@@ -66,6 +69,7 @@ export default function MapImage() {
             })
             .then((res) => {
                 setImageSourceURL(URL.createObjectURL(res));
+                setLoading(false);
             })
             .catch((err) => {
                 console.error(err);
@@ -74,6 +78,8 @@ export default function MapImage() {
 
     function r4updateMap(event) {
         event.preventDefault();
+
+        setLoading(true);
 
         readyl4smap()
             .then((res) => {
@@ -87,6 +93,7 @@ export default function MapImage() {
                     })
                     .then(async (res) => {
                         setImageSourceURL(URL.createObjectURL(res));
+                        setLoading(false);
                     });
             })
             .catch((err) => {
@@ -115,6 +122,7 @@ export default function MapImage() {
                         </button>
                     </form>
                     <button onClick={r4updateMap}>Am I Ready?</button>
+                    {loading && <p>Loading...</p>}
                 </div>
             </div>
         </>
