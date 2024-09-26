@@ -53,8 +53,6 @@ export default function MapImage() {
     function updateMap(event) {
         event.preventDefault();
 
-        setLoading(true);
-
         const { res, err } = updatePolyline(textareaValue);
 
         if (err != null) {
@@ -69,7 +67,6 @@ export default function MapImage() {
             })
             .then((res) => {
                 setImageSourceURL(URL.createObjectURL(res));
-                setLoading(false);
             })
             .catch((err) => {
                 console.error(err);
@@ -79,21 +76,14 @@ export default function MapImage() {
     function r4updateMap(event) {
         event.preventDefault();
 
-        setLoading(true);
-
         readyl4smap()
             .then((res) => {
-                fetch(`/api?polyline=${res}`, {
-                    header: {
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                })
+                fetch(`/api?polyline=${res}`)
                     .then((res) => {
                         return res.blob();
                     })
                     .then(async (res) => {
                         setImageSourceURL(URL.createObjectURL(res));
-                        setLoading(false);
                     })
                     .catch((err) => {
                         console.error(err);
