@@ -54,13 +54,13 @@ export default async function readyl4smap() {
         Object.keys(geoPath).map((item) => item.split(', '))
     );
 
-    // console.log(
-    //     filteredPath,
-    //     geoPath,
-    //     Object.keys(geoPath).map((item) => item.split(', ')),
-    //     encodedPath,
-    //     geo
-    // );
+    console.log(
+        filteredPath,
+        geoPath,
+        Object.keys(geoPath).map((item) => item.split(', ')),
+        encodedPath,
+        geo
+    );
 
     return encodedPath;
 

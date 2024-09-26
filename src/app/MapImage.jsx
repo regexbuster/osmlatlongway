@@ -94,6 +94,9 @@ export default function MapImage() {
                     .then(async (res) => {
                         setImageSourceURL(URL.createObjectURL(res));
                         setLoading(false);
+                    })
+                    .catch((err) => {
+                        console.error(err);
                     });
             })
             .catch((err) => {
