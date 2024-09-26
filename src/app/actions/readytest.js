@@ -50,8 +50,13 @@ export default async function readyl4smap() {
         }
     });
 
-    if (Object.keys(geoPath).length <= 1) {
-        geoPath['0, 0'] = {};
+    if (Object.keys(geoPath).length == 1) {
+        const loc = Object.keys(geoPath)[0]
+            .split(', ')
+            .map((coord) => {
+                return parseFloat(coord) + 0.001;
+            });
+        geoPath[loc] = {};
     }
 
     let encodedPath = encode(
