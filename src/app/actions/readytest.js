@@ -54,7 +54,7 @@ export default async function readyl4smap() {
         const loc = Object.keys(geoPath)[0]
             .split(', ')
             .map((coord) => {
-                return parseFloat(coord) + 0.001;
+                return (parseFloat(coord) + 0.001).toFixed(4);
             })
             .join(', ');
         geoPath[loc] = {};
