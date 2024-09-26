@@ -73,6 +73,8 @@ export default function MapImage() {
     }
 
     function r4updateMap(event) {
+        event.preventDefault();
+
         readyl4smap()
             .then((res) => {
                 fetch(`/api?polyline=${res}`, {
@@ -112,7 +114,7 @@ export default function MapImage() {
                             Submit
                         </button>
                     </form>
-                    <button onClick={() => r4updateMap()}>Am I Ready?</button>
+                    <button onClick={r4updateMap}>Am I Ready?</button>
                 </div>
             </div>
         </>
