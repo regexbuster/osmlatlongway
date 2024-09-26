@@ -51,7 +51,7 @@ export default async function readyl4smap() {
     });
 
     if (geoPath.length <= 1) {
-        geoPath.push([0, 0]);
+        geoPath['0, 0'] = {};
     }
 
     let encodedPath = encode(
