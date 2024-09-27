@@ -13,6 +13,7 @@ export default function MapImage() {
     const [textareaValue, setTextareaValue] = useState('');
 
     const [getData, setGetData] = useState(0);
+    const [getTextData, setGetTextData] = useState(0);
     const [encodedPath, setEncodedPath] = useState(null);
 
     function updateArea(event) {
@@ -102,11 +103,25 @@ export default function MapImage() {
         setGetData(getData + 1);
     }
 
-    async function getEncodedPath() {
-        const res = await fetch('https://ready4l4s.cerfca.st/diagnose/', {
-            headers: { 'Access-Control-Allow-Origin': '*' },
-        });
-        const resJson = await res.json();
+    function incrementGetTextData() {
+        setGetTextData(getTextData + 1);
+    }
+
+    async function getEncodedPath(useTextArea = false) {
+        let resJson = null;
+
+        if (!useTextArea) {
+            console.log(useTextArea, 'FALSE');
+            const res = await fetch('https://ready4l4s.cerfca.st/diagnose/', {
+                headers: { 'Access-Control-Allow-Origin': '*' },
+            });
+            resJson = await res.json();
+        } else {
+            console.log(useTextArea, 'TRUE');
+            resJson = JSON.parse(textareaValue);
+        }
+
+        console.log(resJson);
 
         let path = resJson.bleeching.path;
         let geo = resJson.geo;
@@ -134,12 +149,17 @@ export default function MapImage() {
             const pointGeoArr = point.geo
                 .split(',')
                 .map((value) => value.trim());
-            if (index == 0 || sortedPath[index - 1].geo != point.geo) {
+            if (
+                index == 0 ||
+                coordPath[coordPath.length - 1].join(', ') != point.geo
+            ) {
                 coordPath.push(pointGeoArr);
             }
         });
 
         let encodedPath = encode(coordPath);
+
+        console.log(coordPath, encodedPath);
 
         setEncodedPath(encodedPath);
     }
@@ -151,10 +171,19 @@ export default function MapImage() {
         }
     }, [getData]);
 
+    // when button pressed get coordPath
+    useEffect(() => {
+        if (getTextData > 0) {
+            getEncodedPath(true);
+        }
+    }, [getTextData]);
+
     async function getMap() {
         const res = await fetch(`/api?polyline=${encodedPath}`);
         const blob = await res.blob();
+        console.log('almost');
         setImageSourceURL(URL.createObjectURL(blob));
+        console.log('set');
     }
 
     useEffect(() => {
@@ -184,6 +213,9 @@ export default function MapImage() {
                         </button>
                     </form>
                     <button onClick={incrementGetData}>Am I Ready?</button>
+                    <button onClick={incrementGetTextData}>
+                        TextArea Am I Ready?
+                    </button>
                 </div>
             </div>
         </>
