@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styles from './page.module.css';
 
@@ -11,7 +11,9 @@ import { encode, decode } from '@googlemaps/polyline-codec';
 export default function MapImage() {
     const [imageSourceURL, setImageSourceURL] = useState('');
     const [textareaValue, setTextareaValue] = useState('');
-    const [loading, setLoading] = useState(false);
+
+    const [getData, setGetData] = useState(0);
+    const [encodedPath, setEncodedPath] = useState(null);
 
     function updateArea(event) {
         setTextareaValue(event.target.value);
@@ -75,26 +77,91 @@ export default function MapImage() {
             });
     }
 
-    function r4updateMap(event) {
-        event.preventDefault();
+    // function r4updateMap(event) {
+    //     event.preventDefault();
 
-        readyl4smap()
-            .then((res) => {
-                fetch(`/api?polyline=${res}`)
-                    .then((res) => {
-                        return res.blob();
-                    })
-                    .then(async (res) => {
-                        setImageSourceURL(URL.createObjectURL(res));
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+    //     readyl4smap()
+    //         .then((res) => {
+    //             fetch(`/api?polyline=${res}`)
+    //                 .then((res) => {
+    //                     return res.blob();
+    //                 })
+    //                 .then(async (res) => {
+    //                     setImageSourceURL(URL.createObjectURL(res));
+    //                 })
+    //                 .catch((err) => {
+    //                     console.error(err);
+    //                 });
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    // }
+
+    function incrementGetData() {
+        setGetData(getData + 1);
     }
+
+    async function getEncodedPath() {
+        const res = await fetch('https://ready4l4s.cerfca.st/diagnose/', {
+            headers: { 'Access-Control-Allow-Origin': '*' },
+        });
+        const resJson = await res.json();
+
+        let path = resJson.bleeching.path;
+        let geo = resJson.geo;
+
+        let sortedPath = [];
+
+        // sort the keys of path
+        // sortedPath gets setup with a sorted list of keys
+        // we add on geo data if availible or we put NA
+        Object.keys(path)
+            .sort()
+            .forEach((key) => {
+                sortedPath.push({
+                    ...path[key],
+                    geo: geo[path[key].address],
+                });
+            });
+
+        let coordPath = [];
+
+        sortedPath.forEach((point, index) => {
+            if (point.geo == 'NA') {
+                return;
+            }
+            const pointGeoArr = point.geo
+                .split(',')
+                .map((value) => value.trim());
+            if (index == 0 || sortedPath[index - 1].geo != point.geo) {
+                coordPath.push(pointGeoArr);
+            }
+        });
+
+        let encodedPath = encode(coordPath);
+
+        setEncodedPath(encodedPath);
+    }
+
+    // when button pressed get coordPath
+    useEffect(() => {
+        if (getData > 0) {
+            getEncodedPath();
+        }
+    }, [getData]);
+
+    async function getMap() {
+        const res = await fetch(`/api?polyline=${encodedPath}`);
+        const blob = await res.blob();
+        setImageSourceURL(URL.createObjectURL(blob));
+    }
+
+    useEffect(() => {
+        if (encodedPath) {
+            getMap();
+        }
+    }, [encodedPath]);
 
     return (
         <>
@@ -116,8 +183,7 @@ export default function MapImage() {
                             Submit
                         </button>
                     </form>
-                    <button onClick={r4updateMap}>Am I Ready?</button>
-                    {loading && <p>Loading...</p>}
+                    <button onClick={incrementGetData}>Am I Ready?</button>
                 </div>
             </div>
         </>
