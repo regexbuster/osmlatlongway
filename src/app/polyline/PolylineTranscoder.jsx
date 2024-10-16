@@ -1,9 +1,13 @@
+'use client';
+
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
 
 import { encode, decode } from '@googlemaps/polyline-codec';
 
 async function handleEncode(coordStr) {
+    'use server';
+
     const coordJSON = JSON.parse(coordStr);
 
     const path = coordJSON.bleeching.path;
@@ -38,7 +42,9 @@ async function handleEncode(coordStr) {
     });
 }
 
-async function handleDecode(polylineStr) {}
+async function handleDecode(polylineStr) {
+    'use server';
+}
 
 export default function PolylineTranscoder() {
     const [coordsValue, setCoordValue] = useState('');
