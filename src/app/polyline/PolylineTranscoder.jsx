@@ -3,22 +3,30 @@
 import { useState, useEffect } from 'react';
 import { useFormState } from 'react-dom';
 
-import { handleEncode, handleDecode } from './transcoding';
+import { handleCoordEncode, handleDecode } from './transcoding';
 
 export default function PolylineTranscoder() {
     const [coordsValue, setCoordValue] = useState('');
     const [polylineValue, setPolylineValue] = useState('');
+    const [info, setInfo] = useState(null);
 
-    const [coordFormState, coordFormAction] = useFormState(handleEncode, null);
+    const [coordFormState, coordFormAction] = useFormState(
+        handleCoordEncode,
+        null
+    );
     const [polylineFormState, polylineFormAction] = useFormState(
         handleDecode,
         null
     );
 
+    // triggers when form state changes and populates text areas
     useEffect(() => {
         if (coordFormState?.coords && coordFormState?.polyline) {
             setCoordValue(coordFormState.coords);
             setPolylineValue(coordFormState.polyline);
+            if (coordFormState?.info) {
+                setInfo(coordFormState.info);
+            }
         } else if (coordFormState?.error) {
             alert(coordFormState.error);
         } else {
@@ -37,6 +45,7 @@ export default function PolylineTranscoder() {
         }
     }, [polylineFormState]);
 
+    // for managing text area content with state variable
     function updateCoords(event) {
         setCoordValue(event.target.value);
     }
