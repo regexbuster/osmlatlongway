@@ -1,60 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormState } from 'react-dom';
 
-import { encode, decode } from '@googlemaps/polyline-codec';
-
-async function handleEncode(coordStr) {
-    'use server';
-
-    const coordJSON = JSON.parse(coordStr);
-
-    const path = coordJSON.bleeching.path;
-    const geo = coordJSON.geo;
-
-    let sortedPath = [];
-
-    Object.keys(path)
-        .sort()
-        .forEach((key) => {
-            sortedPath.push({ ...path[key], geo: geo[path[key].address] });
-        });
-
-    let coordPath = [];
-
-    sortedPath.forEach((point, index) => {
-        if (point.geo == 'NA') {
-            return;
-        }
-
-        const pointGeoArr = point.geo.split(',').map((value) => value.trim());
-
-        // remove duplicates unless first or previous point is not the same
-        if (
-            index == 0 ||
-            coordPath[coordPath.length - 1].join(', ') != point.geo
-        ) {
-            coordPath.push(pointGeoArr);
-        }
-
-        const encodedPath = encode(coordPath);
-    });
-}
-
-async function handleDecode(polylineStr) {
-    'use server';
-}
+import { handleEncode, handleDecode } from './transcoding';
 
 export default function PolylineTranscoder() {
     const [coordsValue, setCoordValue] = useState('');
     const [polylineValue, setPolylineValue] = useState('');
 
-    const [coordFormState, coordFormAction] = useFormState(handleEncode, {});
+    const [coordFormState, coordFormAction] = useFormState(handleEncode, null);
     const [polylineFormState, polylineFormAction] = useFormState(
         handleDecode,
-        {}
+        null
     );
+
+    useEffect(() => {
+        if (coordFormState?.coords && coordFormState?.polyline) {
+            setCoordValue(coordFormState.coords);
+            setPolylineValue(coordFormState.polyline);
+        } else if (coordFormState?.error) {
+            alert(coordFormState.error);
+        } else {
+            console.log(coordFormState);
+        }
+    }, [coordFormState]);
+
+    useEffect(() => {
+        if (polylineFormState?.coords && polylineFormState?.polyline) {
+            setCoordValue(polylineFormState.coords);
+            setPolylineValue(polylineFormState.polyline);
+        } else if (polylineFormState?.error) {
+            alert(polylineFormState.error);
+        } else {
+            console.log(polylineFormState);
+        }
+    }, [polylineFormState]);
 
     function updateCoords(event) {
         setCoordValue(event.target.value);
