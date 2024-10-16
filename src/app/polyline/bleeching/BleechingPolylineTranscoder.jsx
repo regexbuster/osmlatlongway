@@ -15,6 +15,10 @@ export default function BleechingPolylineTranscoder() {
     const [polylineValue, setPolylineValue] = useState('');
     const [info, setInfo] = useState(null);
 
+    const [bleechingFormState, bleechingFormAction] = useFormState(
+        handleBleechingParse,
+        null
+    );
     const [coordFormState, coordFormAction] = useFormState(
         handleCoordEncode,
         null
@@ -25,6 +29,16 @@ export default function BleechingPolylineTranscoder() {
     );
 
     // triggers when form state changes and populates text areas
+    useEffect(() => {
+        if (bleechingFormState?.parse) {
+            setBleechingValue(bleechingFormState.parse);
+        } else if (bleechingFormState?.error) {
+            alert(bleechingFormState.error);
+        } else {
+            console.log(bleechingFormState);
+        }
+    }, [bleechingFormState]);
+
     useEffect(() => {
         if (coordFormState?.coords && coordFormState?.polyline) {
             setCoordValue(coordFormState.coords);
@@ -65,6 +79,15 @@ export default function BleechingPolylineTranscoder() {
 
     return (
         <>
+            <form>
+                <textarea
+                    name="bleeching"
+                    onChange={updateBleeching}
+                    value={bleechingValue}
+                ></textarea>
+                <button type="submit">Parse</button>
+            </form>
+
             <form action={coordFormAction}>
                 <textarea
                     name="coords"
