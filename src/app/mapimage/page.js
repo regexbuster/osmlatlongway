@@ -1,5 +1,3 @@
-import PolylineTranscoder from './PolylineTranscoder';
-
-export default function PolylinePage() {
-    return <PolylineTranscoder />;
+export default function MapImagePage() {
+    return <></>;
 }

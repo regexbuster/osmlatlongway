@@ -2,7 +2,7 @@
 
 import { encode, decode } from '@googlemaps/polyline-codec';
 
-export async function handleCoordEncode(state, formData) {
+export async function handleCoordParse(state, formData) {
     try {
         const coordStr = formData.get('coords');
 
@@ -88,9 +88,7 @@ export async function handleBleechingEncode(state, formData) {
             }
         });
 
-        const encodedPath = encode(coordPath);
-
-        return { coords: coordStr, polyline: encodedPath };
+        return { coords: coordPath, polyline: encodedPath };
     } catch (err) {
         return { error: JSON.stringify(err, Object.getOwnPropertyNames(err)) };
     }
@@ -102,7 +100,7 @@ export async function handleDecode(state, formData) {
 
         const coordStr = decode(polylineStr);
 
-        return { coords: coordStr, polyline: polylineStr };
+        return { coords: coordStr.join('\n'), polyline: polylineStr };
     } catch (err) {
         return { error: JSON.stringify(err, Object.getOwnPropertyNames(err)) };
     }
