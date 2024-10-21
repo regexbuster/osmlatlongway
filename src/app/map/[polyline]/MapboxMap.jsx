@@ -131,7 +131,7 @@ export default function MapboxMap() {
             mapNode.current.remove();
             mapNode.current = null;
         };
-    }, []);
+    });
 
     // return <div ref={mapNode} style={{ width: '100vw', height: '100vh' }} />;
     /*
