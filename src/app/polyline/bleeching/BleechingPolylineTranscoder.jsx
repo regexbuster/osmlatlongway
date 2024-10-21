@@ -30,8 +30,10 @@ export default function BleechingPolylineTranscoder() {
 
     // triggers when form state changes and populates text areas
     useEffect(() => {
+        console.log(bleechingFormState);
+
         if (bleechingFormState?.parse) {
-            setBleechingValue(bleechingFormState.parse);
+            setBleechingValue(bleechingFormState.parse.join('\n'));
         } else if (bleechingFormState?.error) {
             alert(bleechingFormState.error);
         } else {
@@ -79,7 +81,7 @@ export default function BleechingPolylineTranscoder() {
 
     return (
         <>
-            <form>
+            <form action={bleechingFormAction}>
                 <textarea
                     name="bleeching"
                     onChange={updateBleeching}

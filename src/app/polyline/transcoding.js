@@ -54,7 +54,7 @@ export async function handleCoordEncode(state, formData) {
 
 export async function handleBleechingParse(state, formData) {
     try {
-        const coordStr = formData.get('coords');
+        const coordStr = formData.get('bleeching');
         const coordJSON = JSON.parse(coordStr);
 
         const path = coordJSON.bleeching.path;
