@@ -10,7 +10,7 @@ import {
 } from '../transcoding';
 
 export default function BleechingPolylineTranscoder() {
-    const [bleechingValue, setBleechingValue] = useState('');
+    const [bleechingValue, setBleechingValue] = useState();
     const [coordsValue, setCoordValue] = useState('');
     const [polylineValue, setPolylineValue] = useState('');
     const [info, setInfo] = useState(null);

@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useFormState } from 'react-dom';
 
+import styles from './polyline.module.css';
 import { handleCoordEncode, handleDecode } from './transcoding';
 
 export default function PolylineTranscoder() {
-    const [coordsValue, setCoordValue] = useState('');
+    const [coordsValue, setCoordValue] = useState('10, 12\n12, 10\n15, 15');
     const [polylineValue, setPolylineValue] = useState('');
     const [info, setInfo] = useState(null);
 
@@ -55,9 +56,14 @@ export default function PolylineTranscoder() {
     }
 
     return (
-        <>
-            <form action={coordFormAction}>
+        <div className={styles.formWrapper}>
+            <form
+                style={{ minWidth: '33%' }}
+                action={coordFormAction}
+                className={styles.transcodeForm}
+            >
                 <textarea
+                    className={styles.textarea}
                     name="coords"
                     onChange={updateCoords}
                     value={coordsValue}
@@ -65,14 +71,19 @@ export default function PolylineTranscoder() {
                 <button type="submit">Encode</button>
             </form>
 
-            <form action={polylineFormAction}>
+            <form
+                style={{ minWidth: '33%' }}
+                action={polylineFormAction}
+                className={styles.transcodeForm}
+            >
                 <textarea
+                    className={styles.textarea}
                     name="polyline"
                     onChange={updatePolyline}
                     value={polylineValue}
                 ></textarea>
                 <button type="submit">Decode</button>
             </form>
-        </>
+        </div>
     );
 }
